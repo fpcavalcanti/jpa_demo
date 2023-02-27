@@ -11,9 +11,11 @@ import com.vscodetest.app.demo.model.ItemVenda;
 import com.vscodetest.app.demo.model.Produto;
 import com.vscodetest.app.demo.model.Venda;
 import com.vscodetest.app.demo.repos.ClienteRepo;
-// import com.vscodetest.app.demo.repos.ItemVendaRepo;
+import com.vscodetest.app.demo.repos.ItemVendaRepo;
 import com.vscodetest.app.demo.repos.ProdutoRepo;
 import com.vscodetest.app.demo.repos.VendaRepo;
+
+import jakarta.transaction.Transactional;
 
 @Service
 public class LojaService {
@@ -21,8 +23,8 @@ public class LojaService {
     @Autowired
     private ClienteRepo clienteRepo;
 
-    // @Autowired
-    // private ItemVendaRepo itemVendaRepo;
+    @Autowired
+    private ItemVendaRepo itemVendaRepo;
 
     @Autowired
     private VendaRepo vendaRepo;
@@ -30,6 +32,7 @@ public class LojaService {
     @Autowired
     private ProdutoRepo produtoRepo;
 
+    @Transactional
     public void makeShoppingRuns() {
         Cliente cliente = clienteRepo.findByNome("Felipe P. Cavalcanti");
 
@@ -52,17 +55,19 @@ public class LojaService {
         venda.setCliente(cliente);
         venda.setItens(items);
         
-        vendaRepo.save(venda);
-
-        System.out.println(venda.toString());
+        vendaSave(venda);
 
         List<Venda> vendaList = vendaRepo.findAll();
-        for(Venda vda :vendaList) {
-            // Venda testVenda = vendaRepo.findById(vda.getId());
-            Venda finalVenda = vendaRepo.findByIdAndFetchItemsEagerly(vda.getId());
-            System.out.println(finalVenda);
-            // System.out.println(vda.toString());
-        }
+        for(Venda vda :vendaList) 
+            System.out.println(vda.toString());
         
+    }
+
+    private void vendaSave(Venda venda) {
+        vendaRepo.save(venda);
+        for (ItemVenda vItem: venda.getItens()) {
+            vItem.setVenda(venda);
+            itemVendaRepo.save(vItem);
+        }
     }
 }

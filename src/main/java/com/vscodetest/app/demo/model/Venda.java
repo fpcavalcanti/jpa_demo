@@ -57,7 +57,8 @@ public class Venda {
 
     @Override
     public String toString() {
-        return MessageFormat.format("Venda para o cliente {0} com {1} produto(s) na cesta. Total de R$ {2}.", 
+        return MessageFormat.format("Venda id {0} - para o cliente {1} com {2} produto(s) na cesta. Total de R$ {3}.",
+            getId(),
             cliente.getNome(), 
             getNumProdutos(), 
             getSomaVenda());
