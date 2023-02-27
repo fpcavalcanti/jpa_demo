@@ -57,9 +57,8 @@ public class LojaService {
         
         vendaSave(venda);
 
-        List<Venda> vendaList = vendaRepo.findAll();
-        for(Venda vda :vendaList) 
-            System.out.println(vda.toString());
+        List<Venda> vendas = vendaRepo.findAll();
+        vendas.forEach(System.out::println);
         
     }
 
